@@ -41,36 +41,6 @@ jacoco {
     toolVersion = "0.8.6"
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "cb-amutha_Chargebee_AndroidSQTest"
-        property "sonar.organization", "cb-amutha"
-        property "sonar.host.url", "https://sonarcloud.io"
-
-        property "sonar.projectVersion", "1.0"
-        property "sonar.exclusions", "robospice/**/*"
-
-        property "sonar.sources", "src/main/java"
-        property "sonar.binaries", "build/intermediates/classes/debug"
-        property "sonar.java.binaries", "build/intermediates/classes/debug"
-        property "sonar.tests", "src/test/java, src/androidTest/java"
-        property "sonar.java.test.binaries", "build/intermediates/classes/debug"
-
-        def unit = fileTree(dir: project.projectDir, includes: ['**/*.exec']).files
-        def ui = fileTree(dir: project.projectDir, includes: ['**/*.ec']).files
-        unit.addAll(ui)
-
-        // property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/testDebugUnitTest.exec"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property 'sonar.junit.reportsPath', "${project.buildDir}/test-results/testDebugUnitTest"
-        //  property 'sonar.coverage.jacoco.xmlReportPaths', "${project.buildDir}/reports/jococo/jacocoTestReport/jacocoTestReport.xml"
-        //property "sonar.junit.reportsPath", "build/test-results/testDebugUnitTest"
-        property "sonar.android.lint.report", "build/reports/lint-results.xml"
-
-    }
-}
-
-
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
