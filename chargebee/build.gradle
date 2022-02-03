@@ -79,3 +79,30 @@ ext {
 }
 
 apply from: 'deploy.gradle'
+
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    //java compiled classes
+    // def javaTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
+    //kotlin compiled classes
+    def kotlinTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+
+    getSourceDirectories().setFrom([mainSrc])
+    getClassDirectories().setFrom([kotlinTree])
+    getExecutionData().setFrom("${buildDir}/jacoco/testDebugUnitTest.exec")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
