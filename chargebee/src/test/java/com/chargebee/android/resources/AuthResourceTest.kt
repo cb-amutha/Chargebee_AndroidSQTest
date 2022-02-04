@@ -73,37 +73,37 @@ class AuthResourceTest {
             Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
         }
     }
-//    @Test
-//    fun test_validateSdkKey_error(){
-//        val exception = CBException(ErrorDetail("Error"))
-//        val queryParam = Chargebee.sdkKey
-//        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
-//        val lock = CountDownLatch(1)
-//        CBAuthentication.isSDKKeyValid(queryParam) {
-//            when (it) {
-//                is ChargebeeResult.Success -> {
-//                    lock.countDown()
-//                    System.out.println("List plans :"+it.data)
-//                    MatcherAssert.assertThat(
-//                        (it.data),
-//                        Matchers.instanceOf(CBAuthResponse::class.java)
-//                    )
-//                }
-//                is ChargebeeResult.Error -> {
-//                    lock.countDown()
-//                    System.out.println("Error :"+it.exp.message)
-//                }
-//            }
-//        }
-//        lock.await()
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
-//                ChargebeeResult.Error(
-//                    exception
-//                )
-//            )
-//            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
-//        }
-//    }
+    @Test
+    fun test_validateSdkKey_error(){
+        val exception = CBException(ErrorDetail("Error"))
+        val queryParam = Chargebee.sdkKey
+        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
+        val lock = CountDownLatch(1)
+        CBAuthentication.isSDKKeyValid(queryParam) {
+            when (it) {
+                is ChargebeeResult.Success -> {
+                    lock.countDown()
+                    System.out.println("List plans :"+it.data)
+                    MatcherAssert.assertThat(
+                        (it.data),
+                        Matchers.instanceOf(CBAuthResponse::class.java)
+                    )
+                }
+                is ChargebeeResult.Error -> {
+                    lock.countDown()
+                    System.out.println("Error :"+it.exp.message)
+                }
+            }
+        }
+        lock.await()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
+                ChargebeeResult.Error(
+                    exception
+                )
+            )
+            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+        }
+    }
 }
