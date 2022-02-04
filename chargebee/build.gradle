@@ -32,6 +32,15 @@ android {
                 includeNoLocationClasses = true
                 excludes = ['jdk.internal.*']
             }
+            test {
+                filter {
+                   // if (integrationTests.toBoolean()) {
+                      //  includeTestsMatching "*IntegrationTest"
+                   // } else {
+                        includeTestsMatching "*UnitTest"
+                    //}
+                }
+            }
         }
         unitTests.returnDefaultValues = true
     }
@@ -106,3 +115,4 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+//test.finalizedBy jacocoTestReport
