@@ -30,7 +30,7 @@ sonarqube {
         property "sonar.projectVersion", "1.0"
         property "sonar.exclusions", "robospice/**/*"
 
-        property "sonar.sources", "src/main/java"
+        property "sonar.sources", "src/main/java, src/test/java"
         property "sonar.binaries", "build/intermediates/classes/debug"
         property "sonar.java.binaries", "build/intermediates/classes/debug"
         property "sonar.tests", "src/test/java, src/androidTest/java"
