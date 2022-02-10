@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'jacoco'
+//apply plugin: 'jacoco'
+apply from: '../jacoco.gradle'
+apply from: '../sonar.gradle'
 
 android {
     compileSdkVersion 29
@@ -25,30 +27,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-                excludes = ['jdk.internal.*']
-            }
-            test {
-                filter {
-                   // if (integrationTests.toBoolean()) {
-                      //  includeTestsMatching "*IntegrationTest"
-                   // } else {
-                        includeTestsMatching "*UnitTest"
-                    //}
-                }
-            }
-        }
-        unitTests.returnDefaultValues = true
-    }
 }
 
-jacoco {
-    toolVersion = "0.8.6"
-}
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -89,30 +69,7 @@ ext {
 
 apply from: 'deploy.gradle'
 
-task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
-    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-    def mainSrc = "${project.projectDir}/src/main/java"
-
-    //java compiled classes
-    // def javaTree = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", excludes: fileFilter)
-    //kotlin compiled classes
-    def kotlinTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-
-    getSourceDirectories().setFrom([mainSrc])
-    getClassDirectories().setFrom([kotlinTree])
-    getExecutionData().setFrom("${buildDir}/jacoco/testDebugUnitTest.exec")
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-//test.finalizedBy jacocoTestReport

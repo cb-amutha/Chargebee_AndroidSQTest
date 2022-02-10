@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../jacoco.gradle'
+apply from: '../sonar.gradle'
+
 android {
     compileSdkVersion 29
     compileOptions {
@@ -45,4 +48,9 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.8'
 
+}
+
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
