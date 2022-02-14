@@ -33,7 +33,7 @@ sonarqube {
         property "sonar.verbose", true
         //property "sonar.host.url", "http://localhost:9000"
 
-        property "sonar.projectName", "android-sonar-kotlin-master"
+        property "sonar.projectName", "Chargebee_AndroidSQTest"
         // property "sonar.projectKey", "android-sonar-kotlin-master"
         property "sonar.projectVersion", "0.1"
         property "sonar.issuesReport.html.enable", "true"
