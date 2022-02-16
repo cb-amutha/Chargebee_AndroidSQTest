@@ -27,7 +27,7 @@ def fileFilter = [
     '**/*Module*.*', //Dagger2 generated code
     '**/Gateway*.*',
     '**/Stripe*.*',
-    '**/Addon*.*','**/TempToken*.*',
+    '**/Addo*.*','**/TempToken*.*',
     '**/Token*.*','**/TemporaryT*.*', '**/MerchantPayment*.*', '**/PaymentMethod*.*',
    // '**/com/chargebee/android/billingservice/**',
     '**/com/chargebee/example/**'
