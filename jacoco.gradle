@@ -25,12 +25,13 @@ def fileFilter = [
     '**/*_*Factory*.*', //Dagger2 generated code
     '**/*Component*.*', //Dagger2 generated code
     '**/*Module*.*', //Dagger2 generated code
-    '**/Gateway*.*',
-    '**/Stripe*.*',
-    '**/Addo*.*','**/TempToken*.*',
-    '**/Token*.*','**/TemporaryT*.*', '**/MerchantPayment*.*', '**/PaymentMethod*.*',
-   // '**/com/chargebee/android/billingservice/**',
-    '**/com/chargebee/example/**'
+    '**/Gateway*.*','**/PurchaseResour*.*','**/GPErrorCo*.*','**/PurchaseMode*.*',
+    '**/Stripe*.*','**/Failur*.*','**/InternalError*.*','**/CBProductIDResult*.*','**/ChargebeeResult*.*','**/BillingClientMana*.*',
+    '**/Addo*.*','**/TempToken*.*','**/CBGatewayD*.*','**/TokenizationCon*.*','**/Card.*','**/KeyValidation*.*',
+    '**/Token*.*','**/TemporaryT*.*', '**/MerchantPayment*.*', '**/Payment*.*','**/InvalidRequest*.*',
+    '**/CBPurchaseFai*.*','**/OperationFai*.*','**/PaymentExc*.*',
+    '**/com/chargebee/example/**','**/NetworkResponse*.*','**/PaymentD*.*'
+    //'**/com/chargebee/android/billingservice/**'
 ]
 
 def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
