@@ -44,6 +44,7 @@ class SubscriptionResourceTest {
         "","","")
         val queryParam = "0000987657"
         val lock = CountDownLatch(1)
+        val subscriptionWrapper = SubscriptionDetailsWrapper(subscriptionDetail)
         SubscriptionDetail.retrieveSubscription(queryParam) {
             when (it) {
                 is ChargebeeResult.Success -> {
@@ -65,7 +66,7 @@ class SubscriptionResourceTest {
         CoroutineScope(Dispatchers.IO).launch {
             Mockito.`when`(SubscriptionResource().retrieveSubscription(queryParam)).thenReturn(
                 ChargebeeResult.Success(
-                    subscriptionDetail
+                        subscriptionWrapper
                 )
             )
             Mockito.verify(SubscriptionResource(), Mockito.times(1)).retrieveSubscription(queryParam)
