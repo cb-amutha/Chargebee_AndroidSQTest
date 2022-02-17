@@ -44,67 +44,67 @@ class PurchaseProductTest {
 
     }
 
-    @Test
-    fun test_purchaseProduct_success(){
-        val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
-        val skuDetails = SkuDetails(jsonDetails)
-        val products = Products("merchant.pro.android","","",skuDetails,true)
-        val lock = CountDownLatch(1)
-        CBPurchase.purchaseProduct(products, object : CBCallback.PurchaseCallback<PurchaseModel>{
-            override fun onSuccess(success: PurchaseModel) {
-                lock.countDown()
-                assertThat(success,instanceOf(PurchaseModel::class.java))
-            }
-            override fun onError(error: CBException) {
-                lock.countDown()
-                println(" Error :  ${error.message}")
-            }
-        })
-        lock.await()
-        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
-        val authentication = CBAuthentication("123","item","active","","","")
-        CoroutineScope(Dispatchers.IO).launch {
-            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
-                    ChargebeeResult.Success(
-                            authentication
-                    )
-            )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
-        }
-    }
-    @Test
-    fun test_purchaseProduct_error(){
-        val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
-        val skuDetails = SkuDetails(jsonDetails)
-        val products = Products("","","",skuDetails,true)
-        val lock = CountDownLatch(1)
-        CBPurchase.purchaseProduct(products, object : CBCallback.PurchaseCallback<PurchaseModel>{
-            override fun onSuccess(success: PurchaseModel) {
-                lock.countDown()
-                assertThat(success,instanceOf(PurchaseModel::class.java))
-            }
-            override fun onError(error: CBException) {
-                lock.countDown()
-                println(" Error :  ${error.message}")
-            }
-        })
-        lock.await()
-
-        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
-        val exception = CBException(ErrorDetail("Error"))
-        CoroutineScope(Dispatchers.IO).launch {
-            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
-                    ChargebeeResult.Error(
-                            exception
-                    )
-            )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
-        }
-    }
+//    @Test
+//    fun test_purchaseProduct_success(){
+//        val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
+//        val skuDetails = SkuDetails(jsonDetails)
+//        val products = Products("merchant.pro.android","","",skuDetails,true)
+//        val lock = CountDownLatch(1)
+//        CBPurchase.purchaseProduct(products, object : CBCallback.PurchaseCallback<PurchaseModel>{
+//            override fun onSuccess(success: PurchaseModel) {
+//                lock.countDown()
+//                assertThat(success,instanceOf(PurchaseModel::class.java))
+//            }
+//            override fun onError(error: CBException) {
+//                lock.countDown()
+//                println(" Error :  ${error.message}")
+//            }
+//        })
+//        lock.await()
+//        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
+//        val authentication = CBAuthentication("123","item","active","","","")
+//        CoroutineScope(Dispatchers.IO).launch {
+//            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
+//                    ChargebeeResult.Success(
+//                            authentication
+//                    )
+//            )
+//            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+//        }
+//    }
+//    @Test
+//    fun test_purchaseProduct_error(){
+//        val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
+//        val skuDetails = SkuDetails(jsonDetails)
+//        val products = Products("","","",skuDetails,true)
+//        val lock = CountDownLatch(1)
+//        CBPurchase.purchaseProduct(products, object : CBCallback.PurchaseCallback<PurchaseModel>{
+//            override fun onSuccess(success: PurchaseModel) {
+//                lock.countDown()
+//                assertThat(success,instanceOf(PurchaseModel::class.java))
+//            }
+//            override fun onError(error: CBException) {
+//                lock.countDown()
+//                println(" Error :  ${error.message}")
+//            }
+//        })
+//        lock.await()
+//
+//        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
+//        val exception = CBException(ErrorDetail("Error"))
+//        CoroutineScope(Dispatchers.IO).launch {
+//            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
+//                    ChargebeeResult.Error(
+//                            exception
+//                    )
+//            )
+//            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+//        }
+//    }
     @Test
     fun test_validateReceipt_success(){
         val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
-        val skuDetails = SkuDetails(jsonDetails)
+        val skuDetails = SkuDetails("{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}")
         val products = Products("merchant.pro.android","","",skuDetails,true)
         val lock = CountDownLatch(1)
         CBPurchase.purchaseProduct(products, object : CBCallback.PurchaseCallback<PurchaseModel>{

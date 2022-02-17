@@ -30,7 +30,7 @@ def fileFilter = [
     '**/Addo*.*','**/TempToken*.*',
     '**/Token*.*','**/TemporaryT*.*', '**/MerchantPayment*.*', '**/PaymentMethod*.*',
    // '**/com/chargebee/android/billingservice/**',
-    '**/com/chargebee/example/**/*'
+    '**/com/chargebee/example/**'
 ]
 
 def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
