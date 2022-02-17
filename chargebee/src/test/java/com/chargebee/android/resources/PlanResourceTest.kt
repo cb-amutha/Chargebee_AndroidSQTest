@@ -5,6 +5,7 @@ import com.chargebee.android.ErrorDetail
 import com.chargebee.android.exceptions.CBException
 import com.chargebee.android.exceptions.ChargebeeResult
 import com.chargebee.android.models.Plan
+import com.chargebee.android.models.PlanWrapper
 import com.chargebee.android.models.PlansWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,10 @@ class PlanResourceTest {
             12, 23, "", false, false, "false", false,
             9, false, "app_store", 7, "", "", false, "", false, false
         )
+        val planWrapper = PlanWrapper(plan)
+        val list = ArrayList<PlanWrapper>()
+        list.add(planWrapper)
+        val plansWrapper = PlansWrapper(list)
 
         val queryParam = arrayOf("Standard", "app_store")
         val lock = CountDownLatch(1)
@@ -69,7 +74,7 @@ class PlanResourceTest {
         CoroutineScope(Dispatchers.IO).launch {
             Mockito.`when`(PlanResource().retrieveAllPlans(queryParam)).thenReturn(
                 ChargebeeResult.Success(
-                    plan
+                        plansWrapper
                 )
             )
             Mockito.verify(PlanResource(), times(1)).retrieveAllPlans(queryParam)
