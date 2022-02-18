@@ -33,14 +33,15 @@ import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.util.concurrent.CountDownLatch
 import kotlin.collections.ArrayList
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(MockitoJUnitRunner::class)
 @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-class BillingClientManagerTest  {
+class PurchaseProductTest  {
 
     var billingClient: BillingClientManager? = null
     @Mock
@@ -54,17 +55,17 @@ class BillingClientManagerTest  {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        mContext = ApplicationProvider.getApplicationContext()
+//        mContext = ApplicationProvider.getApplicationContext()
 
         Chargebee.configure(site = "cb-imay-test", publishableApiKey = "test_AVrzSIux7PHMmiMdi7ixAiqoVYE9jHbz", sdkKey = "cb-x2wiixyjr5bl5ihugstyp2exbi") // For play store
 
-//        billingClient = callBack?.let {
-//            BillingClientManager(
-//                    ApplicationProvider.getApplicationContext(),
-//                    BillingClient.SkuType.SUBS,
-//                    productIdList, it
-//            )
-//        }
+        billingClient = callBack?.let {
+            BillingClientManager(
+                    ApplicationProvider.getApplicationContext(),
+                    BillingClient.SkuType.SUBS,
+                    productIdList, it
+            )
+        }
     }
     @After
     fun tearDown(){
@@ -76,8 +77,8 @@ class BillingClientManagerTest  {
     fun test_loadProducts_success(){
 
         CoroutineScope(Dispatchers.IO).launch {
-            //billingClient?.startBillingServiceConnection()
-           // billingClient?.queryAllPurchases()
+            billingClient?.startBillingServiceConnection()
+            billingClient?.queryAllPurchases()
 
             Mockito.`when`(billingClient1.queryPurchasesAsync(BillingClient.SkuType.SUBS))
             verify(billingClient1, times(1))
@@ -85,188 +86,188 @@ class BillingClientManagerTest  {
         }
     }
 
+//    @Test
+//    fun test_billingClient_ready(){
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            billingClient?.isBillingClientReady()
+//
+//            Mockito.`when`(billingClient1.isReady).thenReturn(true)
+//            verify(billingClient1, times(1))
+//                ?.isReady
+//        }
+//    }
+//    @Test
+//    fun test_featureSupported(){
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//
+//            billingClient?.isFeatureSupported()
+//
+//            val response = BillingResult()
+//
+//            Mockito.`when`(billingClient1.isFeatureSupported("subscriptions")).thenReturn(response)
+//            verify(billingClient1, times(1)).isFeatureSupported("subscriptions")
+//        }
+//    }
+
     @Test
-    fun test_billingClient_ready(){
+    fun test_retrieveProducts_success(){
+        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
 
         CoroutineScope(Dispatchers.IO).launch {
-           // billingClient?.isBillingClientReady()
+            val skuType = CBPurchase.SkuType.SUBS
+            Mockito.`when`(mContext?.let {
+                CBPurchase.retrieveProducts(
+                    it,
+                    productIdList,
+                    object : ListProductsCallback<ArrayList<Products>> {
+                        override fun onSuccess(productDetails: ArrayList<Products>) {
+                            println("List products :$productDetails")
+                            assertThat(
+                                productDetails,
+                                instanceOf(Products::class.java)
+                            )
+                        }
 
-            Mockito.`when`(billingClient1.isReady).thenReturn(true)
-            verify(billingClient1, times(1))
-                ?.isReady
+                        override fun onError(error: CBException) {
+                            println("Error in retrieving all items :${error.message}")
+                        }
+                    })
+            }).thenReturn(Unit)
+        }
+    }
+
+    @Test
+    fun test_retrieveProducts_error(){
+        val productIdList = arrayListOf("")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(mContext?.let {
+                CBPurchase.retrieveProducts(
+                    it,
+                    productIdList,
+                    object : ListProductsCallback<ArrayList<Products>> {
+                        override fun onSuccess(productDetails: ArrayList<Products>) {
+                            println("List products :$productDetails")
+                            assertThat(
+                                productDetails,
+                                instanceOf(Products::class.java)
+                            )
+                        }
+
+                        override fun onError(error: CBException) {
+                            println("Error in retrieving all items :${error.message}")
+                        }
+                    })
+            }).thenReturn(Unit)
+        }
+    }
+
+    @Test
+    fun test_retrieveProductIds_success(){
+        val queryParam = arrayOf("100")
+
+        val IDs =  java.util.ArrayList<String>()
+        IDs.add("")
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(CBPurchase.retrieveProductIDs(queryParam) {
+                when (it) {
+                    is CBProductIDResult.ProductIds -> {
+                        assertThat(it,instanceOf(CBProductIDResult::class.java))
+                    }
+                    is CBProductIDResult.Error -> {
+                        println(" Error ${it.exp.message}")
+                    }
+                }
+            }).thenReturn(Unit)
+
         }
     }
     @Test
-    fun test_featureSupported(){
+    fun test_retrieveProductIdsList_success(){
+        val queryParam = arrayOf("100")
 
+        Chargebee.version = CatalogVersion.V2.value
+        val IDs =  java.util.ArrayList<String>()
+        IDs.add("")
         CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
+                when (it) {
+                    is CBProductIDResult.ProductIds -> {
+                        assertThat(it,instanceOf(CBProductIDResult::class.java))
+                    }
+                    is CBProductIDResult.Error -> {
+                        println(" Error ${it.exp.message}")
+                    }
+                }
+            }).thenReturn(Unit)
 
-           // billingClient?.isFeatureSupported()
+        }
+    }
+    @Test
+    fun test_retrieveProductIdsListV1_success(){
+        val queryParam = arrayOf("100")
 
-            val response = BillingResult()
+        Chargebee.version = CatalogVersion.V1.value
+        val IDs =  java.util.ArrayList<String>()
+        IDs.add("")
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
+                when (it) {
+                    is CBProductIDResult.ProductIds -> {
+                        assertThat(it,instanceOf(CBProductIDResult::class.java))
+                    }
+                    is CBProductIDResult.Error -> {
+                        println(" Error ${it.exp.message}")
+                    }
+                }
+            }).thenReturn(Unit)
 
-            Mockito.`when`(billingClient1.isFeatureSupported("subscriptions")).thenReturn(response)
-            verify(billingClient1, times(1)).isFeatureSupported("subscriptions")
+        }
+    }
+    @Test
+    fun test_retrieveProductIdsListUnknown_success(){
+        val queryParam = arrayOf("100")
+
+        Chargebee.version = CatalogVersion.Unknown.value
+        val IDs =  java.util.ArrayList<String>()
+        IDs.add("")
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
+                when (it) {
+                    is CBProductIDResult.ProductIds -> {
+                        assertThat(it,instanceOf(CBProductIDResult::class.java))
+                    }
+                    is CBProductIDResult.Error -> {
+                        println(" Error ${it.exp.message}")
+                    }
+                }
+            }).thenReturn(Unit)
+
         }
     }
 
-//    @Test
-//    fun test_retrieveProducts_success(){
-//        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val skuType = CBPurchase.SkuType.SUBS
-//            Mockito.`when`(mContext?.let {
-//                CBPurchase.retrieveProducts(
-//                    it,
-//                    productIdList,
-//                    object : ListProductsCallback<ArrayList<Products>> {
-//                        override fun onSuccess(productDetails: ArrayList<Products>) {
-//                            println("List products :$productDetails")
-//                            assertThat(
-//                                productDetails,
-//                                instanceOf(Products::class.java)
-//                            )
-//                        }
-//
-//                        override fun onError(error: CBException) {
-//                            println("Error in retrieving all items :${error.message}")
-//                        }
-//                    })
-//            }).thenReturn(Unit)
-//        }
-//    }
-//
-//    @Test
-//    fun test_retrieveProducts_error(){
-//        val productIdList = arrayListOf("")
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(mContext?.let {
-//                CBPurchase.retrieveProducts(
-//                    it,
-//                    productIdList,
-//                    object : ListProductsCallback<ArrayList<Products>> {
-//                        override fun onSuccess(productDetails: ArrayList<Products>) {
-//                            println("List products :$productDetails")
-//                            assertThat(
-//                                productDetails,
-//                                instanceOf(Products::class.java)
-//                            )
-//                        }
-//
-//                        override fun onError(error: CBException) {
-//                            println("Error in retrieving all items :${error.message}")
-//                        }
-//                    })
-//            }).thenReturn(Unit)
-//        }
-//    }
-//
-//    @Test
-//    fun test_retrieveProductIds_success(){
-//        val queryParam = arrayOf("100")
-//
-//        val IDs =  java.util.ArrayList<String>()
-//        IDs.add("")
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(CBPurchase.retrieveProductIDs(queryParam) {
-//                when (it) {
-//                    is CBProductIDResult.ProductIds -> {
-//                        assertThat(it,instanceOf(CBProductIDResult::class.java))
-//                    }
-//                    is CBProductIDResult.Error -> {
-//                        println(" Error ${it.exp.message}")
-//                    }
-//                }
-//            }).thenReturn(Unit)
-//
-//        }
-//    }
-//    @Test
-//    fun test_retrieveProductIdsList_success(){
-//        val queryParam = arrayOf("100")
-//
-//        Chargebee.version = CatalogVersion.V2.value
-//        val IDs =  java.util.ArrayList<String>()
-//        IDs.add("")
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
-//                when (it) {
-//                    is CBProductIDResult.ProductIds -> {
-//                        assertThat(it,instanceOf(CBProductIDResult::class.java))
-//                    }
-//                    is CBProductIDResult.Error -> {
-//                        println(" Error ${it.exp.message}")
-//                    }
-//                }
-//            }).thenReturn(Unit)
-//
-//        }
-//    }
-//    @Test
-//    fun test_retrieveProductIdsListV1_success(){
-//        val queryParam = arrayOf("100")
-//
-//        Chargebee.version = CatalogVersion.V1.value
-//        val IDs =  java.util.ArrayList<String>()
-//        IDs.add("")
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
-//                when (it) {
-//                    is CBProductIDResult.ProductIds -> {
-//                        assertThat(it,instanceOf(CBProductIDResult::class.java))
-//                    }
-//                    is CBProductIDResult.Error -> {
-//                        println(" Error ${it.exp.message}")
-//                    }
-//                }
-//            }).thenReturn(Unit)
-//
-//        }
-//    }
-//    @Test
-//    fun test_retrieveProductIdsListUnknown_success(){
-//        val queryParam = arrayOf("100")
-//
-//        Chargebee.version = CatalogVersion.Unknown.value
-//        val IDs =  java.util.ArrayList<String>()
-//        IDs.add("")
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(CBPurchase.retrieveProductIDList(queryParam) {
-//                when (it) {
-//                    is CBProductIDResult.ProductIds -> {
-//                        assertThat(it,instanceOf(CBProductIDResult::class.java))
-//                    }
-//                    is CBProductIDResult.Error -> {
-//                        println(" Error ${it.exp.message}")
-//                    }
-//                }
-//            }).thenReturn(Unit)
-//
-//        }
-//    }
-//
-//    @Test
-//    fun test_retrieveProductIds_error(){
-//        val queryParam = arrayOf("0")
-//
-//        val IDs =  java.util.ArrayList<String>()
-//        IDs.add("")
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(CBPurchase.retrieveProductIDs(queryParam) {
-//                when (it) {
-//                    is CBProductIDResult.ProductIds -> {
-//                        assertThat(it,instanceOf(CBProductIDResult::class.java))
-//                    }
-//                    is CBProductIDResult.Error -> {
-//                        println(" Error ${it.exp.message}")
-//                    }
-//                }
-//            }).thenReturn(Unit)
-//
-//        }
-//    }
+    @Test
+    fun test_retrieveProductIds_error(){
+        val queryParam = arrayOf("0")
+
+        val IDs =  java.util.ArrayList<String>()
+        IDs.add("")
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(CBPurchase.retrieveProductIDs(queryParam) {
+                when (it) {
+                    is CBProductIDResult.ProductIds -> {
+                        assertThat(it,instanceOf(CBProductIDResult::class.java))
+                    }
+                    is CBProductIDResult.Error -> {
+                        println(" Error ${it.exp.message}")
+                    }
+                }
+            }).thenReturn(Unit)
+
+        }
+    }
 //    @Test
 //    fun test_purchaseProduct_success(){
 //        val jsonDetails = "{\"productId\":\"merchant.premium.android\",\"type\":\"subs\",\"title\":\"Premium Plan (Chargebee Example)\",\"name\":\"Premium Plan\",\"price\":\"₹2,650.00\",\"price_amount_micros\":2650000000,\"price_currency_code\":\"INR\",\"description\":\"Every 6 Months\",\"subscriptionPeriod\":\"P6M\",\"skuDetailsToken\":\"AEuhp4J0KiD1Bsj3Yq2mHPBRNHUBdzs4nTJY3PWRR8neE-22MJNssuDzH2VLFKv35Ov8\"}"
