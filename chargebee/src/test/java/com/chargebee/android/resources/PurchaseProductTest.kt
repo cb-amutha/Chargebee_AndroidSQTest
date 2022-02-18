@@ -1,134 +1,113 @@
-//package com.chargebee.android.resources
-//
-//import android.content.Context
-//import android.os.Build
-//import androidx.test.core.app.ApplicationProvider
-//import com.android.billingclient.api.*
-//import com.chargebee.android.Chargebee
-//import com.chargebee.android.ErrorDetail
-//import com.chargebee.android.billingservice.BillingClientManager
-//import com.chargebee.android.billingservice.CBCallback
-//import com.chargebee.android.billingservice.CBCallback.ListProductsCallback
-//import com.chargebee.android.billingservice.CBPurchase
-//import com.chargebee.android.billingservice.CBPurchase.productIdList
-//import com.chargebee.android.billingservice.PurchaseModel
-//import com.chargebee.android.exceptions.CBException
-//import com.chargebee.android.exceptions.CBProductIDResult
-//import com.chargebee.android.exceptions.ChargebeeResult
-//import com.chargebee.android.models.Products
-//import com.chargebee.android.network.CBReceiptRequestBody
-//import com.chargebee.android.network.CBReceiptResponse
-//import com.chargebee.android.network.Params
-//import com.chargebee.android.network.ReceiptDetail
-//import kotlinx.coroutines.CoroutineScope
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.launch
-//import org.hamcrest.MatcherAssert.assertThat
-//import org.hamcrest.Matchers.instanceOf
-//import org.junit.After
-//import org.junit.Before
-//import org.junit.Test
-//import org.junit.runner.RunWith
-//import org.mockito.Mock
-//import org.mockito.Mockito
-//import org.mockito.Mockito.times
-//import org.mockito.Mockito.verify
-//import org.mockito.MockitoAnnotations
-//import org.robolectric.RobolectricTestRunner
-//import org.robolectric.RuntimeEnvironment
-//import org.robolectric.annotation.Config
-//import java.util.*
-//import java.util.concurrent.CountDownLatch
-//import kotlin.collections.ArrayList
-//
-//@RunWith(RobolectricTestRunner::class)
-//@Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-//class BillingClientManagerTest  {
-//
-//    var billingClient: BillingClientManager? = null
-//    @Mock
-//    lateinit var billingClient1: BillingClient
-//
-//    var mContext: Context? = null
-//    private var callBack : ListProductsCallback<ArrayList<Products>>? = null
-//    private var callBackPurchase : CBCallback.PurchaseCallback<PurchaseModel>? = null
-//
-//    @Before
-//    fun setUp() {
-//        MockitoAnnotations.initMocks(this)
-//        mContext = ApplicationProvider.getApplicationContext()
-//
-//        Chargebee.configure(site = "cb-imay-test", publishableApiKey = "test_AVrzSIux7PHMmiMdi7ixAiqoVYE9jHbz", sdkKey = "cb-x2wiixyjr5bl5ihugstyp2exbi") // For play store
-//
-//    }
-//    @After
-//    fun tearDown(){
-//        mContext = null
-//    }
-//
-//    @Test
-//    fun test_loadProducts_success(){
-//        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
-//
-//        billingClient = callBack?.let {
-//            BillingClientManager(
-//                ApplicationProvider.getApplicationContext(),
-//                BillingClient.SkuType.SUBS,
-//                productIdList, it
-//            )
-//        }
-//
-//        billingClient?.startBillingServiceConnection()
-//        billingClient?.queryAllPurchases()
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(billingClient1.queryPurchasesAsync(BillingClient.SkuType.SUBS))
-//            Mockito.verify(billingClient1, times(1))
-//                ?.queryPurchasesAsync(BillingClient.SkuType.SUBS)
-//        }
-//    }
-//
-//    @Test
-//    fun test_billingClient_ready(){
-//        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
-//
-//        billingClient = callBack?.let {
-//            BillingClientManager(
-//                ApplicationProvider.getApplicationContext(),
-//                BillingClient.SkuType.SUBS,
-//                productIdList, it
-//            )
-//        }
-//
-//        billingClient?.isBillingClientReady()
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(billingClient1.isReady()).thenReturn(true)
-//            Mockito.verify(billingClient1, times(1))
-//                ?.isReady()
-//        }
-//    }
-//    @Test
-//    fun test_featureSupported(){
-//        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
-//
-//        billingClient = callBack?.let {
-//            BillingClientManager(
-//                ApplicationProvider.getApplicationContext(),
-//                BillingClient.SkuType.SUBS,
-//                productIdList, it
-//            )
-//        }
-//
-//        billingClient?.isFeatureSupported()
-//
-//        val response = BillingResult()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            Mockito.`when`(billingClient1.isFeatureSupported("subscriptions")).thenReturn(response)
-//            Mockito.verify(billingClient1, times(1)).isFeatureSupported("subscriptions")
-//        }
-//    }
-//
+package com.chargebee.android.resources
+
+import android.content.Context
+import android.os.Build
+import androidx.test.core.app.ApplicationProvider
+import com.android.billingclient.api.*
+import com.chargebee.android.Chargebee
+import com.chargebee.android.ErrorDetail
+import com.chargebee.android.billingservice.BillingClientManager
+import com.chargebee.android.billingservice.CBCallback
+import com.chargebee.android.billingservice.CBCallback.ListProductsCallback
+import com.chargebee.android.billingservice.CBPurchase
+import com.chargebee.android.billingservice.PurchaseModel
+import com.chargebee.android.exceptions.CBException
+import com.chargebee.android.exceptions.CBProductIDResult
+import com.chargebee.android.exceptions.ChargebeeResult
+import com.chargebee.android.models.Products
+import com.chargebee.android.network.CBReceiptRequestBody
+import com.chargebee.android.network.CBReceiptResponse
+import com.chargebee.android.network.Params
+import com.chargebee.android.network.ReceiptDetail
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.instanceOf
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import java.util.concurrent.CountDownLatch
+import kotlin.collections.ArrayList
+
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
+class BillingClientManagerTest  {
+
+    var billingClient: BillingClientManager? = null
+    @Mock
+    lateinit var billingClient1: BillingClient
+
+    var mContext: Context? = null
+    private var callBack : ListProductsCallback<ArrayList<Products>>? = null
+    private var callBackPurchase : CBCallback.PurchaseCallback<PurchaseModel>? = null
+    val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
+
+    @Before
+    fun setUp() {
+        MockitoAnnotations.initMocks(this)
+        mContext = ApplicationProvider.getApplicationContext()
+
+        Chargebee.configure(site = "cb-imay-test", publishableApiKey = "test_AVrzSIux7PHMmiMdi7ixAiqoVYE9jHbz", sdkKey = "cb-x2wiixyjr5bl5ihugstyp2exbi") // For play store
+
+        billingClient = callBack?.let {
+            BillingClientManager(
+                    ApplicationProvider.getApplicationContext(),
+                    BillingClient.SkuType.SUBS,
+                    productIdList, it
+            )
+        }
+    }
+    @After
+    fun tearDown(){
+        mContext = null
+        billingClient = null
+    }
+
+    @Test
+    fun test_loadProducts_success(){
+
+        billingClient?.startBillingServiceConnection()
+        billingClient?.queryAllPurchases()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(billingClient1.queryPurchasesAsync(BillingClient.SkuType.SUBS))
+            Mockito.verify(billingClient1, times(1))
+                ?.queryPurchasesAsync(BillingClient.SkuType.SUBS)
+        }
+    }
+
+    @Test
+    fun test_billingClient_ready(){
+
+        billingClient?.isBillingClientReady()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(billingClient1.isReady()).thenReturn(true)
+            Mockito.verify(billingClient1, times(1))
+                ?.isReady()
+        }
+    }
+    @Test
+    fun test_featureSupported(){
+
+        billingClient?.isFeatureSupported()
+
+        val response = BillingResult()
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(billingClient1.isFeatureSupported("subscriptions")).thenReturn(response)
+            Mockito.verify(billingClient1, times(1)).isFeatureSupported("subscriptions")
+        }
+    }
+
 //    @Test
 //    fun test_retrieveProducts_success(){
 //        val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
@@ -309,13 +288,6 @@
 //        }
 //        lock.await()
 //
-//        billingClient = callBack?.let {
-//            BillingClientManager(
-//                ApplicationProvider.getApplicationContext(),
-//                BillingClient.SkuType.SUBS,
-//                productIdList, it
-//            )
-//        }
 //
 //        CoroutineScope(Dispatchers.IO).launch {
 //            Mockito.`when`(callBackPurchase?.let { billingClient?.purchase(products, it) }).thenReturn(Unit)
@@ -428,4 +400,4 @@
 //            Mockito.verify(CBReceiptRequestBody("receipt","","",""), times(1)).toCBReceiptReqBody()
 //        }
 //    }
-//}
+}
