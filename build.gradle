@@ -43,7 +43,7 @@ sonarqube {
         property "detekt.sonar.kotlin.config.path", "${rootProject.projectDir}/detekt-config.yml"
 
         property "sonar.java.coveragePlugin", "jacoco"
-        property 'sonar.coverage.exclusions', "**/Gateway*.*,"+
+        property 'sonar.coverage.exclusions', "**/Gateway*.*,"+"**/KeyValidati*.*,"+"**/Failur*.*,"+"**/NetworkResponse*.*,"+
                 "**/Stripe*.*,"+"**/Token*.*,"+"**/MerchantPayment*.*,"+"**/PaymentMethod*.*,"+
                 "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,";
     }
