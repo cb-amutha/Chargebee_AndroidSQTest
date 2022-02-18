@@ -75,10 +75,10 @@ class BillingClientManagerTest  {
     @Test
     fun test_loadProducts_success(){
 
-        billingClient?.startBillingServiceConnection()
-        billingClient?.queryAllPurchases()
-
         CoroutineScope(Dispatchers.IO).launch {
+            billingClient?.startBillingServiceConnection()
+            billingClient?.queryAllPurchases()
+
             Mockito.`when`(billingClient1.queryPurchasesAsync(BillingClient.SkuType.SUBS))
             Mockito.verify(billingClient1, times(1))
                 ?.queryPurchasesAsync(BillingClient.SkuType.SUBS)
@@ -88,9 +88,9 @@ class BillingClientManagerTest  {
     @Test
     fun test_billingClient_ready(){
 
-        billingClient?.isBillingClientReady()
-
         CoroutineScope(Dispatchers.IO).launch {
+            billingClient?.isBillingClientReady()
+
             Mockito.`when`(billingClient1.isReady()).thenReturn(true)
             Mockito.verify(billingClient1, times(1))
                 ?.isReady()
@@ -99,10 +99,12 @@ class BillingClientManagerTest  {
     @Test
     fun test_featureSupported(){
 
-        billingClient?.isFeatureSupported()
-
-        val response = BillingResult()
         CoroutineScope(Dispatchers.IO).launch {
+
+            billingClient?.isFeatureSupported()
+
+            val response = BillingResult()
+
             Mockito.`when`(billingClient1.isFeatureSupported("subscriptions")).thenReturn(response)
             Mockito.verify(billingClient1, times(1)).isFeatureSupported("subscriptions")
         }
