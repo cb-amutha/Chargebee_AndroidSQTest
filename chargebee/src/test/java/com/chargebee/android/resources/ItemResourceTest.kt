@@ -48,14 +48,13 @@ class ItemResourceTest {
     fun test_retrieveItemsList_success(){
 
         val item = Items("123","item","active","play_store")
-        val items = Items("","","","")
-        val itemWrapper = ItemWrapper(items)
+        val itemWrapper = ItemWrapper(item)
 
         val list = ArrayList<ItemWrapper>()
         list.add(itemWrapper)
         val itemsWrapper = ItemsWrapper(list)
 
-        val queryParam = arrayOf("Standard", "app_store")
+        val queryParam = arrayOf("8", "Standard", Chargebee.channel)
         val lock = CountDownLatch(1)
         Items.retrieveAllItems(queryParam) {
             when (it) {
