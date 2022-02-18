@@ -45,7 +45,7 @@ sonarqube {
         property "sonar.java.coveragePlugin", "jacoco"
         property 'sonar.coverage.exclusions', "**/Gateway*.*,"+
                 "**/Stripe*.*,"+"**/Token*.*,"+"**/MerchantPayment*.*,"+"**/PaymentMethod*.*,"+
-                "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,"+"**/com/chargebee/android/billingservice/**";
+                "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,";
     }
 }
 
