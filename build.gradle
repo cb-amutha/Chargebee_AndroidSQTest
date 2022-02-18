@@ -44,8 +44,10 @@ sonarqube {
 
         property "sonar.java.coveragePlugin", "jacoco"
         property 'sonar.coverage.exclusions', "**/Gateway*.*,"+"**/KeyValidati*.*,"+"**/Failur*.*,"+"**/NetworkResponse*.*,"+
-                "**/Stripe*.*,"+"**/Token*.*,"+"**/MerchantPayment*.*,"+"**/PaymentMethod*.*,"+
-                "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,";
+                "**/Stripe*.*,"+"**/Token*.*,"+"**/MerchantPayment*.*,"+"**/PaymentMethod*.*,"+ "**/GPError*.*,"+"**/PurchaseResour*.*,"+
+                "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,"+"**/PurchaseMode*.*,"+"**/BillingClientMana*.*,"+
+                "**/InternalError*.*,"+"**/TemporaryT*.*,"+"**/CBProductIDResult*.*,"+"**/ChargebeeResult*.*,"+"**/OperationFai*.*,"+
+                "**/CBPurchaseFai*.*,"+"**/PaymentExc*.*,"+"**/PaymentD*.*,"+"**/CBGatewayD*.*,"+"**/TokenizationCon*.*,"+"**/Card.*";
     }
 }
 
