@@ -5,9 +5,12 @@ import com.chargebee.android.Chargebee
 import com.chargebee.android.ErrorDetail
 import com.chargebee.android.exceptions.CBException
 import com.chargebee.android.exceptions.ChargebeeResult
+import com.chargebee.android.loggers.CBLogger
 import com.chargebee.android.network.Auth
 import com.chargebee.android.network.CBAuthResponse
 import com.chargebee.android.network.CBAuthentication
+import com.chargebee.android.network.CBAuthenticationBody
+import com.chargebee.android.repository.AuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.CountDownLatch
@@ -26,6 +31,7 @@ import java.util.concurrent.CountDownLatch
 @RunWith(MockitoJUnitRunner::class)
 class AuthResourceTest {
 
+    val logger: CBLogger? = null
     @Before
     fun setUp(){
         MockitoAnnotations.initMocks(this)
@@ -65,13 +71,58 @@ class AuthResourceTest {
         }
         lock.await()
 
+        val body =CBAuthenticationBody(
+            auth.sKey,
+            auth.applicationId,
+            auth.appName,
+            auth.channel
+        )
         CoroutineScope(Dispatchers.IO).launch {
             Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
                 ChargebeeResult.Success(
                         cbAuthResponse
                 )
             )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+            Mockito.`when`(CBAuthenticationBody.fromCBAuthBody(auth)).thenReturn(
+                body
+            )
+            verify(CBAuthenticationBody, times(1)).fromCBAuthBody(auth)
+            verify(AuthResource(), times(1)).authenticate(auth)
+        }
+    }
+    @Test
+    fun test_Authenticate_success(){
+
+        val authentication = CBAuthentication("123","item","active","","","")
+        val cbAuthResponse = CBAuthResponse(authentication)
+
+        val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
+        val lock = CountDownLatch(1)
+        CBAuthentication.authenticate(auth) {
+            when (it) {
+                is ChargebeeResult.Success -> {
+                    lock.countDown()
+                    System.out.println("List plans :"+it.data)
+                    MatcherAssert.assertThat(
+                        (it.data),
+                        Matchers.instanceOf(CBAuthResponse::class.java)
+                    )
+                }
+                is ChargebeeResult.Error -> {
+                    lock.countDown()
+                    System.out.println("Error :"+it.exp.message)
+                }
+            }
+        }
+        lock.await()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Mockito.`when`(AuthResource().authenticate(auth)).thenReturn(
+                ChargebeeResult.Success(
+                    cbAuthResponse
+                )
+            )
+            verify(AuthResource(), times(1)).authenticate(auth)
         }
     }
     @Test
@@ -79,10 +130,11 @@ class AuthResourceTest {
 
         val authentication = CBAuthentication("123","item","active","","","")
         val cbAuthResponse = CBAuthResponse(authentication)
-        val queryParam = ""
+
+        Chargebee.sdkKey = ""
         val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
         val lock = CountDownLatch(1)
-        CBAuthentication.isSDKKeyValid(queryParam) {
+        CBAuthentication.verifyAppDetails(auth,logger) {
             when (it) {
                 is ChargebeeResult.Success -> {
                     lock.countDown()
@@ -106,7 +158,15 @@ class AuthResourceTest {
                             cbAuthResponse
                     )
             )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+           verify(AuthResource(),
+
+               times(1)).authenticate(auth)
+            verify(CBAuthentication, times(1)).verifyAppDetails(auth,logger){
+                ChargebeeResult.Error(
+                    exp = CBException(
+                        error = ErrorDetail(message = "SDK key is empty", apiErrorCode = "400")
+                    ))
+            }
         }
     }
     @Test
@@ -114,11 +174,11 @@ class AuthResourceTest {
 
         val authentication = CBAuthentication("123","item","active","","","")
         val cbAuthResponse = CBAuthResponse(authentication)
-        val queryParam = ""
+
         Chargebee.applicationId = ""
         val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
         val lock = CountDownLatch(1)
-        CBAuthentication.isSDKKeyValid(queryParam) {
+        CBAuthentication.verifyAppDetails(auth,logger = null) {
             when (it) {
                 is ChargebeeResult.Success -> {
                     lock.countDown()
@@ -142,7 +202,13 @@ class AuthResourceTest {
                             cbAuthResponse
                     )
             )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+            verify(AuthResource(), times(1)).authenticate(auth)
+            verify(CBAuthentication, times(1)).verifyAppDetails(auth,logger){
+                ChargebeeResult.Error(
+                    exp = CBException(
+                        error = ErrorDetail(message = "Application ID is empty", apiErrorCode = "400")
+                    ))
+            }
         }
     }
     @Test
@@ -154,7 +220,7 @@ class AuthResourceTest {
         Chargebee.appName = ""
         val auth = Auth(Chargebee.sdkKey, Chargebee.applicationId, Chargebee.appName, Chargebee.channel)
         val lock = CountDownLatch(1)
-        CBAuthentication.isSDKKeyValid(queryParam) {
+        CBAuthentication.verifyAppDetails(auth,logger = null) {
             when (it) {
                 is ChargebeeResult.Success -> {
                     lock.countDown()
@@ -178,7 +244,13 @@ class AuthResourceTest {
                             cbAuthResponse
                     )
             )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+            verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+            verify(CBAuthentication, times(1)).verifyAppDetails(auth,logger){
+                ChargebeeResult.Error(
+                    exp = CBException(
+                        error = ErrorDetail(message = "App Name is empty", apiErrorCode = "400")
+                    ))
+            }
         }
     }
     @Test
@@ -211,7 +283,7 @@ class AuthResourceTest {
                     exception
                 )
             )
-            Mockito.verify(AuthResource(), Mockito.times(1)).authenticate(auth)
+            verify(AuthResource(), times(1)).authenticate(auth)
         }
     }
 }

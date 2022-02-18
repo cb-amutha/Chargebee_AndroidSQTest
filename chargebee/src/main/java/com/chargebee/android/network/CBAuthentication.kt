@@ -28,7 +28,7 @@ data class CBAuthentication(val resource_id: String, val app_id: String,
             verifyAppDetails(auth, logger,completion)
         }
 
-        private fun verifyAppDetails(auth: Auth, logger: CBLogger?=null, completion : (ChargebeeResult<Any>) -> Unit) {
+        fun verifyAppDetails(auth: Auth, logger: CBLogger?=null, completion : (ChargebeeResult<Any>) -> Unit) {
             if (TextUtils.isEmpty(Chargebee.appName))
                 completion(ChargebeeResult.Error(
                     exp = CBException(
