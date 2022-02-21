@@ -47,7 +47,7 @@ sonarqube {
                 "**/Stripe*.*,"+"**/Token*.*,"+"**/MerchantPayment*.*,"+"**/PaymentMethod*.*,"+ "**/GPError*.*,"+"**/PurchaseResour*.*,"+
                 "**/com/chargebee/example/**,"+"**/TempToken*.*,"+"**/Addo*.*,"+"**/PurchaseMode*.*,"+"**/BillingClientMana*.*,"+
                 "**/InternalError*.*,"+"**/TemporaryT*.*,"+"**/CBProductIDResult*.*,"+"**/ChargebeeResult*.*,"+"**/OperationFai*.*,"+
-                "**/CBPurchaseFai*.*,"+"**/PaymentExc*.*,"+"**/PaymentD*.*,"+"**/CBGatewayD*.*,"+"**/TokenizationCon*.*,"+"**/Card.*";
+                "**/CBPurchaseFai*.*,"+"**/PaymentExc*.*,"+"**/PaymentD*.*,"+"**/CBGatewayD*.*,"+"**/TokenizationCon*.*,"+"**/Card.*,"+"**/com/chargebee/android/billingservice/**'";
     }
 }
 
