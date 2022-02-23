@@ -15,8 +15,8 @@ import com.chargebee.android.network.CBAuthentication
 import com.chargebee.android.network.Params
 import com.chargebee.android.resources.CatalogVersion
 import com.chargebee.android.resources.ReceiptResource
-import okhttp3.Credentials
 import java.util.ArrayList
+
 object CBPurchase {
 
     var billingClientManager: BillingClientManager? = null

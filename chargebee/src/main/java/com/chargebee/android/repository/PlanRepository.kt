@@ -1,7 +1,6 @@
 package com.chargebee.android.repository
 
 import com.chargebee.android.Chargebee
-import com.chargebee.android.models.ItemsWrapper
 import com.chargebee.android.models.PlanWrapper
 import com.chargebee.android.models.PlansWrapper
 import retrofit2.Response

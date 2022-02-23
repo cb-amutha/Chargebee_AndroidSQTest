@@ -56,7 +56,7 @@ class ItemsActivity : BaseActivity(), ItemsAdapter.ItemClickListener {
     }
 
     private fun setItemListAdapter(){
-        listItemsAdapter = ItemsAdapter(mItemsList, this)
+        listItemsAdapter = ItemsAdapter(mItemsList)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
         mItemsRecyclerView?.setLayoutManager(layoutManager)
         mItemsRecyclerView?.setItemAnimator(DefaultItemAnimator())

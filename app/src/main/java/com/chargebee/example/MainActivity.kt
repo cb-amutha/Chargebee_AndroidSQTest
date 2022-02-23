@@ -77,7 +77,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         when(CBMenu.valueOf(featureList.get(position).toString()).value){
             CBMenu.Configure.value -> {
                 if (view != null) {
-                    onClickConfigure(view)
+                    onClickConfigure()
                 }
             }
             CBMenu.GetPlans.value -> {
@@ -111,7 +111,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
                     when (it) {
                         is CBProductIDResult.ProductIds -> {
                             hideProgressDialog()
-                            val array = it.IDs.toTypedArray()
+                            val array = it.productIdList.toTypedArray()
                             GlobalScope.launch(Dispatchers.Main) {
                                 alertListProductId(array)
                             }
@@ -133,9 +133,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
                 showProgressDialog()
                 mBillingViewModel?.retrieveSubscription("1000000894110088")
             }
-            else ->{
 
-            }
         }
     }
 
@@ -145,7 +143,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         this.startActivity(intent)
     }
 
-    private fun onClickConfigure(view: View) {
+    private fun onClickConfigure() {
         val builder = AlertDialog.Builder(this)
         val inflater = layoutInflater
         val dialogLayout = inflater.inflate(R.layout.activity_configure, null)
@@ -153,7 +151,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         val apiKeyEditText  = dialogLayout.findViewById<EditText>(R.id.etv_apikey)
         val sdkKeyEditText  = dialogLayout.findViewById<EditText>(R.id.etv_sdkkey)
         builder.setView(dialogLayout)
-        builder.setPositiveButton("Initialize") { _, i ->
+        builder.setPositiveButton("Initialize") { _, _ ->
 
             if (!TextUtils.isEmpty(siteNameEditText.text.toString()) && !TextUtils.isEmpty(
                     apiKeyEditText.text.toString()
@@ -209,7 +207,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         if (list.isNotEmpty()) {
             builder.setItems(
                 list
-            ) { dialog, which ->
+            ) { _, which ->
                 Log.i(
                     javaClass.simpleName,
                     " Item clicked :" + list[which] + " position :" + which
@@ -226,7 +224,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         }
         builder.setPositiveButton(
             "Ok"
-        ) { dialogInterface, i -> }
+        ) { _, _ -> }
         val dialog = builder.create()
         dialog.show()
     }

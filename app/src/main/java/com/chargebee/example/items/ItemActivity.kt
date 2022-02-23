@@ -34,10 +34,10 @@ class ItemActivity: BaseActivity() {
 
         this.viewModel = ItemsViewModel()
 
-        this.itemButton?.setOnClickListener(View.OnClickListener { view: View? ->
+        this.itemButton?.setOnClickListener {
             showProgressDialog()
             viewModel!!.retrieveItem(itemIdInput?.getText().toString())
-        })
+        }
 
         viewModel?.mItemResult?.observe(this, Observer {
             hideProgressDialog()

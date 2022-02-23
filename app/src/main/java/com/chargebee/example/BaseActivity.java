@@ -3,10 +3,7 @@ package com.chargebee.example;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -54,9 +51,8 @@ public class BaseActivity extends AppCompatActivity {
         TextView textViewMessage =  dialog.findViewById(R.id.tv_message);
         textViewMessage.setText(msg);
         Button dialogButton =  dialog.findViewById(R.id.dialogButtonOK);
-        dialogButton.setOnClickListener(view ->  {
-                dialog.dismiss();
-        });
+        dialogButton.setOnClickListener(view ->
+                dialog.dismiss());
         dialog.show();
     }
 }
