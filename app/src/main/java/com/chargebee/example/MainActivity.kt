@@ -14,11 +14,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chargebee.android.Chargebee
-import com.chargebee.android.billingservice.CBCallback
-import com.chargebee.android.billingservice.CBPurchase
-import com.chargebee.android.exceptions.CBException
-import com.chargebee.android.exceptions.CBProductIDResult
-import com.chargebee.android.models.Products
 import com.chargebee.example.adapter.ListItemsAdapter
 import com.chargebee.example.addon.AddonActivity
 import com.chargebee.example.billing.BillingActivity
@@ -31,7 +26,6 @@ import com.chargebee.example.token.TokenizeActivity
 import com.chargebee.example.util.CBMenu
 import com.chargebee.example.util.Constants.PRODUCTS_LIST_KEY
 import com.google.gson.Gson
-import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
     private var mItemsRecyclerView: RecyclerView? = null
@@ -75,9 +69,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         this.mMainViewModel?.mProductResult?.observeForever {
             hideProgressDialog()
             if (it.size > 0) {
-                GlobalScope.launch(Dispatchers.Main) {
-                    launchProductDetailsScreen(gson.toJson(it))
-                }
+                launchProductDetailsScreen(gson.toJson(it))
             } else {
                 alertSuccess("Items not available to buy")
             }
