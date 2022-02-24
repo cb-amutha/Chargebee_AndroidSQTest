@@ -31,9 +31,7 @@ import com.chargebee.example.token.TokenizeActivity
 import com.chargebee.example.util.CBMenu
 import com.chargebee.example.util.Constants.PRODUCTS_LIST_KEY
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
     private var mItemsRecyclerView: RecyclerView? = null
@@ -43,12 +41,15 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
     var mContext: Context? = null
     private val gson = Gson()
     private var mBillingViewModel : BillingViewModel? = null
+    private var mMainViewModel : MainViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mContext = this
         mBillingViewModel = BillingViewModel()
+        mMainViewModel = MainViewModel()
+
         this.mItemsRecyclerView = findViewById(R.id.rv_list_feature)
         setListAdapter()
 
@@ -61,6 +62,29 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
             hideProgressDialog()
             Log.i(javaClass.simpleName, "subscription status:  $it")
             alertSuccess(it)
+        }
+
+        this.mMainViewModel?.mResult?.observeForever {
+            hideProgressDialog()
+            alertListProductId(it)
+        }
+        this.mMainViewModel?.mResult?.observeForever {
+            hideProgressDialog()
+            alertListProductId(it)
+        }
+        this.mMainViewModel?.mProductResult?.observeForever {
+            hideProgressDialog()
+            if (it.size > 0) {
+                GlobalScope.launch(Dispatchers.Main) {
+                    launchProductDetailsScreen(gson.toJson(it))
+                }
+            } else {
+                alertSuccess("Items not available to buy")
+            }
+        }
+        this.mMainViewModel?.mError?.observeForever {
+            hideProgressDialog()
+            showDialog(it)
         }
     }
 
@@ -106,24 +130,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
             }
             CBMenu.ProductIDs.value -> {
                 showProgressDialog()
-                val queryParam = arrayOf("100")
-                CBPurchase.retrieveProductIDs(queryParam) {
-                    when (it) {
-                        is CBProductIDResult.ProductIds -> {
-                            hideProgressDialog()
-                            val array = it.productIdList.toTypedArray()
-                            GlobalScope.launch(Dispatchers.Main) {
-                                alertListProductId(array)
-                            }
-                        }
-                        is CBProductIDResult.Error -> {
-                            hideProgressDialog()
-                            Log.e(javaClass.simpleName, " ${it.exp.message}")
-                            val empty = arrayOf("Product IDs not found on this site for play store")
-                            alertListProductId(empty)
-                        }
-                    }
-                }
+                this.mMainViewModel?.retrieveProductIdList()
             }
             CBMenu.GetProducts.value -> {
                 //val SUBS_SKUS = arrayListOf("merchant.pro.android", "merchant.premium.android")
@@ -180,24 +187,8 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
         dialog.show()
     }
     private fun getProductIdList(productIdList: ArrayList<String>){
-        CBPurchase.retrieveProducts(
-            this,
-            productIdList,
-            object : CBCallback.ListProductsCallback<ArrayList<Products>> {
-                override fun onSuccess(productDetails: ArrayList<Products>) {
-                    if (productDetails.size > 0) {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            launchProductDetailsScreen(gson.toJson(productDetails))
-                        }
-                    } else {
-                        alertSuccess("Items not available to buy")
-                    }
-                }
-                override fun onError(error: CBException) {
-                    Log.e(javaClass.simpleName, "Error:  ${error.message}")
-                    showDialog(error.message)
-                }
-            })
+        showProgressDialog()
+        this.mMainViewModel?.retrieveProducts(productIdList, this)
     }
 
 
@@ -220,7 +211,7 @@ class MainActivity : BaseActivity(), ListItemsAdapter.ItemClickListener {
             val empty = arrayOf("Product IDs not found on this site for play store")
             builder.setItems(
                 empty
-            ) { dialog, which -> }
+            ) { _, _ -> }
         }
         builder.setPositiveButton(
             "Ok"
