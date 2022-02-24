@@ -15,10 +15,7 @@ import com.chargebee.android.exceptions.CBException
 import com.chargebee.android.exceptions.CBProductIDResult
 import com.chargebee.android.exceptions.ChargebeeResult
 import com.chargebee.android.models.Products
-import com.chargebee.android.network.CBReceiptRequestBody
-import com.chargebee.android.network.CBReceiptResponse
-import com.chargebee.android.network.Params
-import com.chargebee.android.network.ReceiptDetail
+import com.chargebee.android.network.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,7 +46,9 @@ class PurchaseProductTest  {
     @Mock
     lateinit var skuDetails: SkuDetails
 
-    var mContext: Context? = null
+    @Mock
+    lateinit var mContext: Context
+
     private var callBack : ListProductsCallback<ArrayList<Products>>? = null
     private var callBackPurchase : CBCallback.PurchaseCallback<PurchaseModel>? = null
     val productIdList = arrayListOf("merchant.pro.android", "merchant.premium.android")
@@ -69,7 +68,6 @@ class PurchaseProductTest  {
     }
     @After
     fun tearDown(){
-        mContext = null
         billingClient = null
     }
 
@@ -92,7 +90,7 @@ class PurchaseProductTest  {
 
         CoroutineScope(Dispatchers.IO).launch {
             val skuType = CBPurchase.SkuType.SUBS
-            Mockito.`when`(mContext?.let {
+            Mockito.`when`(mContext.let {
                 CBPurchase.retrieveProducts(
                     it,
                     productIdList,
@@ -143,8 +141,8 @@ class PurchaseProductTest  {
     fun test_retrieveProductIds_success(){
         val queryParam = arrayOf("100")
 
-        val IDs =  java.util.ArrayList<String>()
-        IDs.add("")
+        val productIdList =  java.util.ArrayList<String>()
+        productIdList.add("merchant.pro.android")
         CoroutineScope(Dispatchers.IO).launch {
             Mockito.`when`(CBPurchase.retrieveProductIDs(queryParam) {
                 when (it) {
@@ -157,11 +155,14 @@ class PurchaseProductTest  {
                 }
             }).thenReturn(Unit)
 
+            verify(CBPurchase, times(1)).retrieveProductIDList(queryParam){
+                CBProductIDResult.Error(CBException(ErrorDetail("Error")))
+            }
         }
     }
     @Test
     fun test_retrieveProductIdsList_success(){
-        val queryParam = arrayOf("100")
+        val queryParam = arrayOf("8", "Standard", Chargebee.channel)
 
         Chargebee.version = CatalogVersion.V2.value
         val productsIds =  java.util.ArrayList<String>()
@@ -178,11 +179,14 @@ class PurchaseProductTest  {
                 }
             }).thenReturn(Unit)
 
+            verify(CBPurchase, times(1)).retrieveProductIDList(queryParam){
+                CBProductIDResult.ProductIds(CBPurchase.productIdList)
+            }
         }
     }
     @Test
     fun test_retrieveProductIdsListV1_success(){
-        val queryParam = arrayOf("100")
+        val queryParam = arrayOf("Standard", Chargebee.channel)
 
         Chargebee.version = CatalogVersion.V1.value
         val IDs =  java.util.ArrayList<String>()
@@ -199,6 +203,9 @@ class PurchaseProductTest  {
                 }
             }).thenReturn(Unit)
 
+            verify(CBPurchase, times(1)).retrieveProductIDList(queryParam){
+                CBProductIDResult.ProductIds(CBPurchase.productIdList)
+            }
         }
     }
     @Test
@@ -220,6 +227,9 @@ class PurchaseProductTest  {
                 }
             }).thenReturn(Unit)
 
+            verify(CBPurchase, times(1)).retrieveProductIDList(queryParam){
+                CBProductIDResult.ProductIds(CBPurchase.productIdList)
+            }
         }
     }
 
@@ -241,6 +251,9 @@ class PurchaseProductTest  {
                 }
             }).thenReturn(Unit)
 
+            verify(CBPurchase, times(1)).retrieveProductIDList(queryParam){
+                CBProductIDResult.Error(CBException(ErrorDetail("Error")))
+            }
         }
     }
     @Test
