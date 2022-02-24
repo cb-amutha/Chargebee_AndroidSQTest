@@ -21,6 +21,21 @@ internal data class InternalErrorWrapper(val errors: Array<InternalErrorDetail>)
         val message = errors.getOrNull(0)?.message ?: ""
         return ErrorDetail(message, httpStatusCode=statusCode)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InternalErrorWrapper
+
+        if (!errors.contentEquals(other.errors)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return errors.contentHashCode()
+    }
 }
 
 internal data class InternalErrorDetail(val message: String)

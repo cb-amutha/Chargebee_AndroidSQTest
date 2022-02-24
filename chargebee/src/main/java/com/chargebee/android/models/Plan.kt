@@ -1,15 +1,12 @@
 package com.chargebee.android.models
 
 import android.text.TextUtils
-import com.chargebee.android.CBResult
-import com.chargebee.android.Chargebee
 import com.chargebee.android.ErrorDetail
 import com.chargebee.android.exceptions.CBException
 import com.chargebee.android.exceptions.ChargebeeResult
 import com.chargebee.android.exceptions.InvalidRequestException
 import com.chargebee.android.exceptions.OperationFailedException
 import com.chargebee.android.loggers.CBLogger
-import com.chargebee.android.resources.ItemsResource
 import com.chargebee.android.resources.PlanResource
 
 data class Plan(

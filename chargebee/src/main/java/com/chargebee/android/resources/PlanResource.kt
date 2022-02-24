@@ -3,8 +3,6 @@ package com.chargebee.android.resources
 import android.util.Log
 import com.chargebee.android.*
 import com.chargebee.android.exceptions.ChargebeeResult
-import com.chargebee.android.models.Plan
-import com.chargebee.android.repository.ItemsRepository
 import com.chargebee.android.repository.PlanRepository
 
 internal class PlanResource: BaseResource(Chargebee.baseUrl) {

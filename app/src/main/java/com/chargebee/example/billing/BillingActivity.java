@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chargebee.android.billingservice.CBPurchase;
 import com.chargebee.android.models.Products;
 import com.chargebee.example.BaseActivity;
 import com.chargebee.example.R;
@@ -22,8 +21,6 @@ public class BillingActivity extends BaseActivity implements ProductListAdapter.
 
     private ArrayList<Products> productList = null;
     private ProductListAdapter productListAdapter = null;
-    private LinearLayoutManager linearLayoutManager;
-    private RecyclerView mItemsRecyclerView = null;
     private BillingViewModel billingViewModel= new BillingViewModel();
     private static final String TAG = "BillingActivity";
     private int position = 0;
@@ -34,7 +31,7 @@ public class BillingActivity extends BaseActivity implements ProductListAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
-        mItemsRecyclerView = findViewById(R.id.rv_product_list);
+        RecyclerView mItemsRecyclerView = findViewById(R.id.rv_product_list);
         String productDetails = getIntent().getStringExtra(PRODUCTS_LIST_KEY);
 
         if(productDetails != null) {
@@ -44,7 +41,7 @@ public class BillingActivity extends BaseActivity implements ProductListAdapter.
         }
 
         productListAdapter = new ProductListAdapter(this,productList, this);
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mItemsRecyclerView.setLayoutManager(linearLayoutManager);
         mItemsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mItemsRecyclerView.setAdapter(productListAdapter);
@@ -54,7 +51,6 @@ public class BillingActivity extends BaseActivity implements ProductListAdapter.
             System.out.println("purchaseToken :"+purchaseToken);
             Log.i(TAG, "purchaseToken :"+purchaseToken);
 
-            //showPurchaseSuccessDialog(purchaseToken);
             products = productList.get(position);
             if (products!= null) {
                 showProgressDialog();

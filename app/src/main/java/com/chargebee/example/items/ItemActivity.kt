@@ -1,7 +1,6 @@
 package com.chargebee.example.items
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -34,10 +33,10 @@ class ItemActivity: BaseActivity() {
 
         this.viewModel = ItemsViewModel()
 
-        this.itemButton?.setOnClickListener(View.OnClickListener { view: View? ->
+        this.itemButton?.setOnClickListener {
             showProgressDialog()
             viewModel!!.retrieveItem(itemIdInput?.getText().toString())
-        })
+        }
 
         viewModel?.mItemResult?.observe(this, Observer {
             hideProgressDialog()
