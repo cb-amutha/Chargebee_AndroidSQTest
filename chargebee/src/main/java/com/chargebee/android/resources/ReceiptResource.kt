@@ -2,7 +2,6 @@ package com.chargebee.android.resources
 
 import android.util.Log
 import com.chargebee.android.Chargebee
-import com.chargebee.android.ErrorDetail
 import com.chargebee.android.exceptions.ChargebeeResult
 import com.chargebee.android.network.*
 import com.chargebee.android.network.CBReceiptRequestBody
@@ -18,8 +17,7 @@ internal class ReceiptResource : BaseResource(baseUrl = Chargebee.baseUrl){
 
         Log.i(javaClass.simpleName, " validateReceipt Response :$response")
         return responseFromServer(
-            response,
-            ErrorDetail::class.java
+            response
         )
     }
 

@@ -12,8 +12,6 @@ import com.google.gson.Gson;
 
 public class PlanInJavaActivity extends BaseActivity {
 
-    private PlanViewModel viewModel;
-    private EditText planIdInput;
 
     private TextView planName;
     private TextView planPricingText;
@@ -24,28 +22,28 @@ public class PlanInJavaActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_in_java);
 
-        planIdInput = findViewById(R.id.planIdInput);
+        EditText planIdInput = findViewById(R.id.planIdInput);
         Button planButton = findViewById(R.id.planButton);
         planName = findViewById(R.id.planName);
         planPricingText = findViewById(R.id.planPricing);
         errorText = findViewById(R.id.errorText);
 
-        this.viewModel = new PlanViewModel();
+        PlanViewModel viewModel = new PlanViewModel();
 
-        this.viewModel.getPlanResult().observe(this, plan -> {
+        viewModel.getPlanResult().observe(this, plan -> {
             hideProgressDialog();
             planName.setText(plan.getName());
             planPricingText.setText(plan.getPricingModel());
         });
 
-        this.viewModel.getPlanError().observe(this, message -> {
+        viewModel.getPlanError().observe(this, message -> {
             hideProgressDialog();
             errorText.setText(new Gson().fromJson(message, ErrorDetail.class).getMessage());
         });
         planButton.setOnClickListener(view -> {
             this.clearFields();
             showProgressDialog();
-            this.viewModel.retrievePlan(planIdInput.getText().toString());
+            viewModel.retrievePlan(planIdInput.getText().toString());
         });
     }
 

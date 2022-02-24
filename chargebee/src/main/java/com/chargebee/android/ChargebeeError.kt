@@ -36,6 +36,10 @@ internal data class InternalErrorWrapper(val errors: Array<InternalErrorDetail>)
     override fun hashCode(): Int {
         return errors.contentHashCode()
     }
+
+    override fun toString(): String {
+        return super.toString()
+    }
 }
 
 internal data class InternalErrorDetail(val message: String)

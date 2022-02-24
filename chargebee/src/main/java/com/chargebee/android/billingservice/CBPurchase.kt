@@ -107,7 +107,7 @@ object CBPurchase {
         try {
             billingClientManager?.queryPurchaseHistory()
         }catch (exp: Exception){
-            Log.i(javaClass.simpleName, "Exception in validateReceipt() :"+exp.message)
+            Log.i(javaClass.simpleName, "Exception in queryPurchaseHistory() :"+exp.message)
             ChargebeeResult.Error(
                 exp = CBException(
                     error = ErrorDetail(
@@ -123,7 +123,7 @@ object CBPurchase {
         try {
             billingClientManager?.queryAllPurchases()
         }catch (exp: Exception){
-            Log.i(javaClass.simpleName, "Exception in validateReceipt() :"+exp.message)
+            Log.i(javaClass.simpleName, "Exception in queryAllPurchases() :"+exp.message)
             ChargebeeResult.Error(
                 exp = CBException(
                     error = ErrorDetail(

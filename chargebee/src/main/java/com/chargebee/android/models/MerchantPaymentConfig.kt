@@ -41,6 +41,10 @@ internal data class PaymentConfigs(
     override fun hashCode(): Int {
         return pmList.contentHashCode()
     }
+
+    override fun toString(): String {
+        return super.toString()
+    }
 }
 
 internal data class PaymentMethod(
