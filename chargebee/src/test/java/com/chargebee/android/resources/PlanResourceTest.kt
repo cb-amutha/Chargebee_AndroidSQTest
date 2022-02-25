@@ -30,7 +30,7 @@ class PlanResourceTest {
         MockitoAnnotations.initMocks(this)
         Chargebee.configure(
             site = "cb-imay-test",
-            publishableApiKey = "test_EojsGoGFeHoc3VpGPQDOZGAxYy3d0FF3",
+            publishableApiKey = "test_AVrzSIux7PHMmiMdi7ixAiqoVYE9jHbz",
             sdkKey = "cb-x2wiixyjr5bl5ihugstyp2exbi"
         )
 
